@@ -1,6 +1,13 @@
+/**
+ * 全局 API 基础路径
+ * 所有后端接口请求都基于此路径
+ */
 const API_BASE = "/api";
 
-// Global State Cache for ID->Name mapping
+/**
+ * 全局状态缓存
+ * 用于存储 ID 到 实体对象 的映射，方便在列表中显示名称而不是 ID
+ */
 const state = {
   suppliers: {},
   fruits: {},
@@ -8,23 +15,27 @@ const state = {
   employees: {},
 };
 
-// --- Initialization ---
+// --- 初始化 (Initialization) ---
 $(document).ready(function () {
-  // Initial Load
+  // 页面加载完成后，默认加载首页
   loadPage("home");
 
-  // Pre-fetch metadata for mappings
+  // 预加载元数据 (供应商、商品等信息)，用于后续显示
   refreshMetadata();
 
-  // Global AJAX Setup for Loading & Errors
+  // 全局 AJAX 设置
+  // 统一处理 Loading 动画和错误提示
   $.ajaxSetup({
     beforeSend: function () {
+      // 请求开始前显示 Loading 遮罩
       $("#loading-overlay").css("display", "flex");
     },
     complete: function () {
+      // 请求完成后隐藏 Loading 遮罩
       $("#loading-overlay").fadeOut(200);
     },
     error: function (xhr, status, error) {
+      // 请求失败时，使用 SweetAlert2 弹出错误提示
       Swal.fire({
         icon: "error",
         title: "操作失败",
@@ -35,7 +46,11 @@ $(document).ready(function () {
   });
 });
 
-// --- Metadata Management ---
+// --- 元数据管理 (Metadata Management) ---
+/**
+ * 刷新元数据缓存
+ * 从后端获取最新的供应商、商品、客户、员工列表，并存入 state 对象
+ */
 function refreshMetadata() {
   $.get(`${API_BASE}/suppliers`, (data) =>
     data.forEach((s) => (state.suppliers[s.id] = s))
@@ -51,14 +66,21 @@ function refreshMetadata() {
   );
 }
 
-// --- Navigation ---
+// --- 页面导航 (Navigation) ---
+/**
+ * 加载指定页面
+ * @param {string} page 页面标识 (home, customer, fruit, etc.)
+ */
 function loadPage(page) {
+  // 1. 更新侧边栏导航选中状态
   $(".nav-link").removeClass("active");
   $(`a[data-page="${page}"]`).addClass("active");
 
+  // 2. 获取主内容区域并隐藏，准备切换动画
   const contentDiv = $("#main-content");
   contentDiv.hide().removeClass("fade-in");
 
+  // 3. 根据页面标识生成对应的 HTML 内容
   let html = "";
   switch (page) {
     case "home":
@@ -87,9 +109,10 @@ function loadPage(page) {
       break;
   }
 
+  // 4. 插入 HTML 并执行淡入动画
   contentDiv.html(html).fadeIn(300).addClass("fade-in");
 
-  // Post-render actions
+  // 5. 页面加载后的后续操作 (如加载表格数据)
   if (page !== "home") loadData(page);
 }
 

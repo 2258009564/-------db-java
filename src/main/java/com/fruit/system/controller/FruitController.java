@@ -8,36 +8,64 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@RestController
-@RequestMapping("/api")
-@CrossOrigin(origins = "*")
+/**
+ * 控制层 (Controller Layer)
+ * 负责接收前端的 HTTP 请求，调用 Service 层处理业务，并返回 JSON 数据
+ */
+@RestController // Spring 注解：标识这是一个 RESTful 风格的控制器，所有方法的返回值都会自动转换为 JSON
+@RequestMapping("/api") // Spring 注解：定义该控制器所有接口的公共路径前缀为 /api
+@CrossOrigin(origins = "*") // Spring 注解：允许跨域请求 (CORS)，方便前端调试
 public class FruitController {
 
     @Autowired
     private FruitService fruitService;
 
-    // Customer
+    // --- 客户管理接口 ---
+
+    /**
+     * 获取所有客户列表
+     * GET /api/customers
+     */
     @GetMapping("/customers")
     public List<Customer> getAllCustomers() {
         return fruitService.getAllCustomers();
     }
 
+    /**
+     * 创建或更新客户
+     * POST /api/customers
+     * 
+     * @RequestBody: 将请求体中的 JSON 数据映射为 Customer 对象
+     */
     @PostMapping("/customers")
     public Customer createCustomer(@RequestBody Customer customer) {
         return fruitService.saveCustomer(customer);
     }
 
+    /**
+     * 删除客户
+     * DELETE /api/customers/{id}
+     * 
+     * @PathVariable: 获取 URL 路径中的 id 参数
+     */
     @DeleteMapping("/customers/{id}")
     public void deleteCustomer(@PathVariable Long id) {
         fruitService.deleteCustomer(id);
     }
 
+    /**
+     * 搜索客户
+     * GET /api/customers/search?keyword=xxx
+     * 
+     * @RequestParam: 获取 URL 查询参数 keyword
+     */
     @GetMapping("/customers/search")
     public List<Customer> searchCustomers(@RequestParam String keyword) {
         return fruitService.searchCustomers(keyword);
     }
 
-    // Employee
+    // --- 员工管理接口 ---
+
     @GetMapping("/employees")
     public List<Employee> getAllEmployees() {
         return fruitService.getAllEmployees();
@@ -58,7 +86,8 @@ public class FruitController {
         return fruitService.searchEmployees(name);
     }
 
-    // Supplier
+    // --- 供应商管理接口 ---
+
     @GetMapping("/suppliers")
     public List<Supplier> getAllSuppliers() {
         return fruitService.getAllSuppliers();
@@ -79,7 +108,8 @@ public class FruitController {
         return fruitService.searchSuppliers(name);
     }
 
-    // Fruit
+    // --- 商品管理接口 ---
+
     @GetMapping("/fruits")
     public List<Fruit> getAllFruits() {
         return fruitService.getAllFruits();
@@ -100,24 +130,43 @@ public class FruitController {
         return fruitService.searchFruits(name);
     }
 
-    // Stock In
+    // --- 入库管理接口 ---
+
+    /**
+     * 提交入库单
+     * POST /api/stock-in
+     */
     @PostMapping("/stock-in")
     public StockIn stockIn(@RequestBody StockIn stockIn) {
         return fruitService.stockIn(stockIn);
     }
 
-    // Sales
+    // --- 销售管理接口 ---
+
+    /**
+     * 提交销售单
+     * POST /api/sales
+     */
     @PostMapping("/sales")
     public Sales sellFruit(@RequestBody Sales sales) {
         return fruitService.sellFruit(sales);
     }
 
+    /**
+     * 获取所有销售记录
+     * GET /api/sales
+     */
     @GetMapping("/sales")
     public List<Sales> getAllSales() {
         return fruitService.getAllSales();
     }
 
-    // Stats
+    // --- 统计接口 ---
+
+    /**
+     * 获取销售统计数据
+     * GET /api/stats
+     */
     @GetMapping("/stats")
     public List<Map<String, Object>> getStats() {
         return fruitService.getSalesStats();
