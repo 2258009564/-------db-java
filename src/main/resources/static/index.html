@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>水果销售管理系统</title>
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <!-- Custom CSS -->
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay">
+      <div class="spinner-border" role="status"></div>
+      <div class="mt-2 text-muted">加载中...</div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar d-flex flex-column">
+      <div class="sidebar-brand">
+        <i class="bi bi-basket2-fill"></i> FruitSys
+      </div>
+      <ul class="nav flex-column mt-3">
+        <li class="nav-item">
+          <a class="nav-link active" data-page="home" onclick="loadPage('home')"
+            ><i class="bi bi-speedometer2"></i> 首页</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            data-page="customer"
+            onclick="loadPage('customer')"
+            ><i class="bi bi-people"></i> 客户管理</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            data-page="employee"
+            onclick="loadPage('employee')"
+            ><i class="bi bi-person-badge"></i> 员工管理</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            data-page="supplier"
+            onclick="loadPage('supplier')"
+            ><i class="bi bi-truck"></i> 供应商管理</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-page="fruit" onclick="loadPage('fruit')"
+            ><i class="bi bi-basket"></i> 商品管理</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-page="stock" onclick="loadPage('stock')"
+            ><i class="bi bi-box-arrow-in-down"></i> 入库管理</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-page="sales" onclick="loadPage('sales')"
+            ><i class="bi bi-cart4"></i> 销售管理</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-page="stats" onclick="loadPage('stats')"
+            ><i class="bi bi-graph-up"></i> 销售统计</a
+          >
+        </li>
+      </ul>
+      <div class="mt-auto p-3 text-center text-white-50 small">
+        &copy; 2025 Fruit System
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+      <!-- Content injected by JS -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
