@@ -12,6 +12,7 @@
 水果管理系统 db-java/
 ├── pom.xml                     # Maven 项目配置文件 (依赖管理)
 ├── README.md                   # 项目说明文档
+├── Fruit_System_Report.md      # 课程设计报告
 ├── sql/
 │   └── init.sql                # 数据库初始化脚本 (建表语句)
 ├── src/
