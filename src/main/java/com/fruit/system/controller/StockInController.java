@@ -25,6 +25,11 @@ public class StockInController {
         return stockInService.saveStockIn(stockIn);
     }
 
+    @PutMapping
+    public StockIn updateStockIn(@RequestBody StockIn stockIn) {
+        return stockInService.saveStockIn(stockIn);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteStockIn(@PathVariable Long id) {
         stockInService.deleteStockIn(id);

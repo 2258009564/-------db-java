@@ -1,6 +1,6 @@
 <template>
   <div class="sales-view">
-    <el-card shadow="never">
+    <el-card shadow="never" class="glass-panel">
       <div class="table-header">
         <h3>销售记录</h3>
         <el-button type="primary" icon="Plus" @click="handleAdd"
@@ -11,8 +11,8 @@
       <el-table
         :data="tableData"
         v-loading="loading"
-        stripe
         style="width: 100%"
+        class="custom-table"
       >
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column label="水果">
@@ -43,10 +43,27 @@
             {{ formatDate(scope.row.saleDate) }}
           </template>
         </el-table-column>
+        <el-table-column label="操作" width="180" align="right">
+          <template #default="scope">
+            <el-button size="small" @click="handleEdit(scope.row)"
+              >编辑</el-button
+            >
+            <el-button
+              size="small"
+              type="danger"
+              @click="handleDelete(scope.row)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
 
-    <el-dialog v-model="dialogVisible" title="新增销售" width="500px">
+    <el-dialog
+      v-model="dialogVisible"
+      :title="isEdit ? '编辑销售' : '新增销售'"
+      width="500px"
+    >
       <el-form ref="formRef" :model="formData" label-width="80px">
         <el-form-item
           label="水果"
@@ -133,7 +150,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import request from "@/api/request";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 const loading = ref(false);
 const list = ref([]);
@@ -143,6 +160,7 @@ const customers = ref([]);
 const dialogVisible = ref(false);
 const formData = ref({});
 const formRef = ref(null);
+const isEdit = ref(false);
 
 const tableData = ref([]);
 
@@ -188,16 +206,41 @@ const formatDate = (dateStr) => {
 };
 
 const handleAdd = () => {
+  isEdit.value = false;
   formData.value = {};
   dialogVisible.value = true;
+};
+
+const handleEdit = (row) => {
+  isEdit.value = true;
+  formData.value = { ...row };
+  dialogVisible.value = true;
+};
+
+const handleDelete = async (row) => {
+  try {
+    await ElMessageBox.confirm("确定要删除这条销售记录吗？", "提示", {
+      type: "warning",
+    });
+    await request.delete(`/sales/${row.id}`);
+    ElMessage.success("删除成功");
+    fetchData();
+  } catch (e) {
+    // cancel
+  }
 };
 
 const submitForm = async () => {
   if (!formRef.value) return;
   await formRef.value.validate(async (valid) => {
     if (valid) {
-      await request.post("/sales", formData.value);
-      ElMessage.success("销售成功");
+      if (isEdit.value) {
+        await request.put("/sales", formData.value);
+        ElMessage.success("更新成功");
+      } else {
+        await request.post("/sales", formData.value);
+        ElMessage.success("销售成功");
+      }
       dialogVisible.value = false;
       fetchData();
     }

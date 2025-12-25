@@ -25,6 +25,11 @@ public class FruitController {
         return fruitService.saveFruit(fruit);
     }
 
+    @PutMapping
+    public Fruit updateFruit(@RequestBody Fruit fruit) {
+        return fruitService.saveFruit(fruit);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteFruit(@PathVariable Long id) {
         fruitService.deleteFruit(id);

@@ -26,6 +26,11 @@ public class SalesController {
         return salesService.saveSales(sales);
     }
 
+    @PutMapping
+    public Sales updateSales(@RequestBody Sales sales) {
+        return salesService.saveSales(sales);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteSales(@PathVariable Long id) {
         salesService.deleteSales(id);

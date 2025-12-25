@@ -1,122 +1,36 @@
+/* Global Styles */
+:root {
+  --primary-color: #d4af37; /* Luxury Gold */
+  --primary-dark: #aa8c2c;
+  --bg-color: #f0f2f5;
+  --text-color: #2c3e50;
+  --sidebar-bg: #1a1c20;
+  --sidebar-text: #ffffff;
+  --header-height: 60px;
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.3);
+  --shadow-sm: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 20px 0 rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 body {
   margin: 0;
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
-    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-  background-color: #f0f2f5;
+  font-family: "Inter", "Helvetica Neue", Helvetica, "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   -webkit-font-smoothing: antialiased;
 }
 
-.el-header {
-  background-color: #fff;
-  color: #333;
-  line-height: 60px;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
-  z-index: 10;
-  padding: 0 20px;
-}
-
-.el-aside {
-  background-color: #304156;
-  color: #fff;
-  min-height: 100vh;
-  transition: width 0.3s;
-  box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
-  z-index: 11;
-}
-
-.el-menu {
-  border-right: none;
-}
-
-.logo {
-  height: 60px;
-  line-height: 60px;
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-  color: #fff;
-  background-color: #2b3649;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo i {
-  margin-right: 10px;
-  color: #409eff;
-}
-
-/* Transitions */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-/* Card Styles */
-.el-card {
-  border-radius: 8px;
-  border: none;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
-  transition: all 0.3s;
-}
-
-.el-card:hover {
-  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.1);
-}
-
-/* Table Styles */
-.el-table {
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.el-table th {
-  background-color: #f5f7fa !important;
-  color: #606266;
-  font-weight: 600;
-}
-
-/* Scrollbar */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* Global Luxury Styles */
-body {
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
-    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f7fa;
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -128,24 +42,52 @@ body {
   background: #909399;
 }
 
-.el-card {
-  border-radius: 8px;
-  border: none;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
-}
-
+/* Element Plus Overrides for Luxury Feel */
 .el-button--primary {
-  background-color: #409eff;
-  border-color: #409eff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
   font-weight: 500;
+  letter-spacing: 0.5px;
 }
 
-.el-button--primary:hover {
-  background-color: #66b1ff;
-  border-color: #66b1ff;
-  box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
+.el-button--primary:hover,
+.el-button--primary:focus {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
 }
 
+.el-card {
+  border-radius: 12px;
+  border: none;
+  box-shadow: var(--shadow-sm) !important;
+  transition: var(--transition);
+}
+
+.el-card:hover {
+  box-shadow: var(--shadow-md) !important;
+  transform: translateY(-2px);
+}
+
+.el-table {
+  border-radius: 8px;
+  overflow: hidden;
+  --el-table-header-bg-color: #f8f9fa;
+}
+
+.el-table th.el-table__cell {
+  font-weight: 600;
+  color: #606266;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: var(--glass-border);
+}
+
+/* Animations */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;

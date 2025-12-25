@@ -1,6 +1,6 @@
 <template>
   <div class="stockin-view">
-    <el-card shadow="never">
+    <el-card shadow="never" class="glass-panel">
       <div class="table-header">
         <h3>进货记录</h3>
         <el-button type="primary" icon="Plus" @click="handleAdd"
@@ -11,8 +11,8 @@
       <el-table
         :data="tableData"
         v-loading="loading"
-        stripe
         style="width: 100%"
+        class="custom-table"
       >
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column label="水果">
@@ -21,11 +21,6 @@
           </template>
         </el-table-column>
         <el-table-column prop="quantity" label="数量" />
-        <el-table-column label="成本">
-          <template #default="scope">
-            <span style="color: #f56c6c">¥{{ scope.row.cost }}</span>
-          </template>
-        </el-table-column>
         <el-table-column label="供应商">
           <template #default="scope">
             {{ getSupplierName(scope.row.supplierId) }}
@@ -36,10 +31,27 @@
             {{ formatDate(scope.row.stockInDate) }}
           </template>
         </el-table-column>
+        <el-table-column label="操作" width="180" align="right">
+          <template #default="scope">
+            <el-button size="small" @click="handleEdit(scope.row)"
+              >编辑</el-button
+            >
+            <el-button
+              size="small"
+              type="danger"
+              @click="handleDelete(scope.row)"
+              >删除</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
     </el-card>
 
-    <el-dialog v-model="dialogVisible" title="新增进货" width="500px">
+    <el-dialog
+      v-model="dialogVisible"
+      :title="isEdit ? '编辑进货' : '新增进货'"
+      width="500px"
+    >
       <el-form ref="formRef" :model="formData" label-width="80px">
         <el-form-item
           label="水果"
@@ -69,18 +81,6 @@
           <el-input-number
             v-model="formData.quantity"
             :min="1"
-            style="width: 100%"
-          />
-        </el-form-item>
-        <el-form-item
-          label="成本"
-          prop="cost"
-          :rules="[{ required: true, message: '请输入成本', trigger: 'blur' }]"
-        >
-          <el-input-number
-            v-model="formData.cost"
-            :min="0"
-            :precision="2"
             style="width: 100%"
           />
         </el-form-item>
@@ -118,7 +118,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import request from "@/api/request";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 const loading = ref(false);
 const list = ref([]);
@@ -127,6 +127,7 @@ const suppliers = ref([]);
 const dialogVisible = ref(false);
 const formData = ref({});
 const formRef = ref(null);
+const isEdit = ref(false);
 
 const tableData = ref([]);
 
@@ -134,36 +135,17 @@ const fetchData = async () => {
   loading.value = true;
   try {
     const [stockRes, fruitRes, supplierRes] = await Promise.all([
-      request.get("/stock-in"), // Note: API endpoint might be /stock-in based on controller
+      request.get("/stockin"),
       request.get("/fruits"),
       request.get("/suppliers"),
     ]);
-    // The controller has @PostMapping("/stock-in") but no GetMapping for all stock-ins?
-    // Let me check the controller again.
-    // Controller has: @PostMapping("/stock-in") public StockIn stockIn(...)
-    // It DOES NOT have a GetMapping for /stock-in list!
-    // Wait, the previous app.js had `fetchData('stockin')`.
-    // Did I miss it in the controller?
-    // I read lines 1-179. Let me check if I missed it.
-    // I see `getAllSales` but I don't see `getAllStockIns`.
-    // I need to add it to the controller if it's missing.
-    // Or maybe it was there and I missed it.
-    // Let's assume I need to add it.
-
-    // For now, I'll proceed with the frontend code assuming the API exists or I will fix it.
-    // I'll check the controller content I read earlier.
-    // Lines 133-142:
-    // @PostMapping("/stock-in")
-    // public StockIn stockIn(@RequestBody StockIn stockIn) { ... }
-    // No GetMapping for stock-in list.
-    // I MUST add it.
-
-    list.value = stockRes || []; // Fallback if API fails or returns null
-    fruits.value = fruitRes;
-    suppliers.value = supplierRes;
+    list.value = stockRes || [];
+    fruits.value = fruitRes || [];
+    suppliers.value = supplierRes || [];
     tableData.value = list.value;
   } catch (e) {
     console.error(e);
+    ElMessage.error("获取数据失败");
   } finally {
     loading.value = false;
   }
@@ -185,31 +167,59 @@ const formatDate = (dateStr) => {
 };
 
 const handleAdd = () => {
-  formData.value = {};
+  isEdit.value = false;
+  formData.value = {
+    stockInDate: new Date().toISOString(),
+  };
   dialogVisible.value = true;
+};
+
+const handleEdit = (row) => {
+  isEdit.value = true;
+  formData.value = { ...row };
+  dialogVisible.value = true;
+};
+
+const handleDelete = (row) => {
+  ElMessageBox.confirm("确定要删除这条进货记录吗？", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  }).then(async () => {
+    try {
+      await request.delete(`/stockin/${row.id}`);
+      ElMessage.success("删除成功");
+      fetchData();
+    } catch (e) {
+      console.error(e);
+      ElMessage.error("删除失败");
+    }
+  });
 };
 
 const submitForm = async () => {
   if (!formRef.value) return;
   await formRef.value.validate(async (valid) => {
     if (valid) {
-      await request.post("/stock-in", formData.value);
-      ElMessage.success("进货成功");
-      dialogVisible.value = false;
-      // Re-fetch to update list (if I add the GET endpoint)
-      // For now, just push to list if I can't fetch
-      // But I really should add the endpoint.
-      fetchData();
+      try {
+        if (isEdit.value) {
+          await request.put("/stockin", formData.value);
+          ElMessage.success("修改成功");
+        } else {
+          await request.post("/stockin", formData.value);
+          ElMessage.success("进货成功");
+        }
+        dialogVisible.value = false;
+        fetchData();
+      } catch (e) {
+        console.error(e);
+        ElMessage.error(isEdit.value ? "修改失败" : "进货失败");
+      }
     }
   });
 };
 
 onMounted(() => {
-  // I need to fix the backend to support GET /stock-in
-  // I will do that in a separate step.
-  // For now, I'll write the frontend code.
-  // Actually, I can't fetch data if the endpoint doesn't exist.
-  // I'll add a TODO to fix the backend.
   fetchData();
 });
 </script>

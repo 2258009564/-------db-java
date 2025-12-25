@@ -25,6 +25,11 @@ public class EmployeeController {
         return employeeService.saveEmployee(employee);
     }
 
+    @PutMapping
+    public Employee updateEmployee(@RequestBody Employee employee) {
+        return employeeService.saveEmployee(employee);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
