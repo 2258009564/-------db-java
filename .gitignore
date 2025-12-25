@@ -1,0 +1,45 @@
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Node.js / Vue Frontend
+vue-frontend/node_modules/
+vue-frontend/dist/
+vue-frontend/npm-debug.log*
+vue-frontend/yarn-debug.log*
+vue-frontend/yarn-error.log*
+vue-frontend/.env.local
+vue-frontend/.env.*.local
+vue-frontend/.DS_Store
+
+# OS Generated
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs
+logs/
+
+# Generated Frontend Assets in Backend
+src/main/resources/static/assets/
+src/main/resources/static/index.html
+src/main/resources/static/vite.svg
