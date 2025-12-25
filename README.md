@@ -1,8 +1,8 @@
-# 水果销售管理系统
+# 水果销售管理系统 (Pro 版)
 
 ## 1. 项目简介
 
-这是一个基于 Java Spring Boot 和 MySQL 开发的水果销售管理系统。旨在帮助水果店进行高效的客户、员工、供应商、商品管理，以及处理日常的入库和销售业务。
+这是一个基于 **Java Spring Boot** 和 **Vue 3** 开发的高端水果销售管理系统。相比旧版本，Pro 版采用了前后端分离架构（单页应用 SPA），拥有现代化的 **Element Plus** UI 设计、强大的数据可视化仪表盘，以及模块化的后端架构。旨在提供“低调奢华有内涵”的用户体验。
 
 ---
 
@@ -10,28 +10,25 @@
 
 ```text
 水果管理系统 db-java/
-├── pom.xml                     # Maven 项目配置文件 (依赖管理)
+├── pom.xml                     # Maven 项目配置文件
 ├── README.md                   # 项目说明文档
-├── Fruit_System_Report.md      # 课程设计报告
-├── sql/
-│   └── init.sql                # 数据库初始化脚本 (建表语句)
+├── vue-frontend/               # [新增] Vue 3 前端项目源码
+│   ├── src/
+│   │   ├── api/                # Axios 请求封装
+│   │   ├── components/         # 公共组件 (如 BaseTable)
+│   │   ├── layout/             # 布局组件 (侧边栏/顶栏)
+│   │   ├── router/             # 路由配置
+│   │   └── views/              # 页面视图 (Dashboard, Login, etc.)
+│   └── package.json            # 前端依赖配置
 ├── src/
 │   └── main/
-│       ├── java/
-│       │   └── com/fruit/system/
-│       │       ├── controller/ # 控制层 (API 接口)
-│       │       ├── entity/     # 实体类 (数据库表映射)
-│       │       ├── repository/ # 数据访问层 (DAO)
-│       │       ├── service/    # 业务逻辑层
-│       │       └── FruitManagementSystemApplication.java # 启动类
+│       ├── java/com/fruit/system/
+│       │   ├── controller/     # 控制层 (按模块拆分: Sales, Employee...)
+│       │   ├── service/        # 业务层 (按模块拆分)
+│       │   ├── repository/     # 数据访问层
+│       │   └── entity/         # 实体类
 │       └── resources/
-│           ├── application.properties # 配置文件 (数据库连接等)
-│           └── static/         # 前端静态资源
-│               ├── css/
-│               │   └── style.css   # 样式表
-│               ├── js/
-│               │   └── app.js      # 前端逻辑脚本
-│               └── index.html      # 系统入口页面
+│           └── static/         # [自动生成] 编译后的前端静态资源
 ```
 
 ---
@@ -43,9 +40,9 @@
 在运行本项目之前，请确保您的电脑已安装以下环境：
 
 - **Java JDK**: 推荐 JDK 17 或 JDK 21。
+- **Node.js**: 推荐 Node.js 16+ (用于构建前端)。
 - **MySQL**: 推荐 MySQL 8.0。
-- **Maven**: 用于构建项目（通常集成在 IDE 中）。
-- **VS Code**: 推荐使用的代码编辑器，需安装 "Extension Pack for Java"。
+- **Maven**: 用于构建项目。
 
 ### 3.2 数据库配置
 
@@ -59,48 +56,62 @@
 
 ### 3.3 如何运行 (How to Run)
 
-1.  **打开项目**: 使用 VS Code 打开 `水果管理系统 db-java` 文件夹。
-2.  **找到启动类**: 在资源管理器中找到 `src/main/java/com/fruit/system/FruitManagementSystemApplication.java`。
-3.  **启动服务**:
-    - 打开该文件。
-    - 点击代码上方的 **"Run"** 按钮，或者按 `F5` 调试运行。
-    - 观察下方 **Terminal (终端)** 面板，等待出现 `Started FruitManagementSystemApplication in ... seconds` 字样。
-4.  **访问系统**:
-    - 打开浏览器，访问: [http://localhost:8080](http://localhost:8080)
+**第一步：构建前端 (Build Frontend)**
 
-### 3.4 如何结束运行 (How to Stop)
+本项目前端独立开发，需先编译生成静态资源。
 
-- 在 VS Code 的 **Terminal (终端)** 面板中，点击右上角的 **垃圾桶图标 (Kill Terminal)**。
-- 或者在终端内点击，然后按快捷键 `Ctrl + C`。
+```bash
+cd vue-frontend
+npm install
+npm run build
+```
+
+_构建完成后，资源会自动输出到 `src/main/resources/static`，后端即可读取。_
+
+**第二步：启动后端 (Run Backend)**
+
+1.  使用 VS Code 打开项目根目录。
+2.  找到启动类 `src/main/java/com/fruit/system/FruitManagementSystemApplication.java`。
+3.  点击 **Run** 运行。
+
+**第三步：访问系统**
+
+- 打开浏览器，访问: [http://localhost:8080](http://localhost:8080)
+- **默认账号**: `admin`
+- **默认密码**: `123456`
+
+### 3.4 开发模式
+
+如果需要修改前端代码并实时预览（热更新）：
+
+```bash
+cd vue-frontend
+npm run dev
+```
 
 ---
 
 ## 4. 功能模块说明
 
-### 4.1 基础管理
+### 4.1 核心亮点 (Pro Features)
 
-- **客户管理**: 录入客户信息（姓名、电话、地址），支持查询和删除。
-- **员工管理**: 管理店铺员工信息及职位。
-- **供应商管理**: 维护水果供应商的联系方式。
-- **商品管理**: 录入水果信息，设置价格，查看当前库存。
+- **可视化仪表盘**: 首页展示销售额甜甜圈图、员工业绩柱状图、实时数据卡片。
+- **现代化 UI**: 采用磨砂玻璃质感登录页、渐变色统计卡片、流畅的页面切换动画。
+- **个人中心**: 支持用户头像下拉菜单（个人中心/退出登录）。
 
-### 4.2 业务处理
+### 4.2 业务模块
 
-- **入库管理**: 选择供应商和商品进行入库操作，系统会自动增加对应商品的库存。
-- **销售管理**: 选择客户、员工和商品进行销售，系统会自动扣减库存并计算总价。如果库存不足会提示错误。
-
-### 4.3 数据统计
-
-- **销售统计**: 查看每种水果的总销售数量和总销售额报表。
+- **基础管理**: 包含水果库存、员工、客户、供应商的增删改查（使用统一的 BaseTable 组件）。
+- **进销存**: 完整的进货记录和销售记录追踪。
 
 ---
 
 ## 5. 技术栈
 
-- **后端**: Java, Spring Boot 2.7.x, Spring Data JPA
+- **后端**: Java, Spring Boot 2.7.5, Spring Data JPA
+- **前端**: Vue 3, Vite, Element Plus, Vue Router 4, Chart.js
 - **数据库**: MySQL 8.0
-- **前端**: HTML5, Bootstrap 5, jQuery, SweetAlert2
-- **交互**: RESTful API, AJAX
+- **交互**: RESTful API, Axios
 
 ---
 
