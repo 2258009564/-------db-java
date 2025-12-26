@@ -72,7 +72,7 @@ const initChart = () => {
 
 onMounted(async () => {
   try {
-    const res = await request.get("/stats");
+    const res = await request.get("/sales/stats/fruit");
     tableData.value = res;
     initChart();
   } catch (error) {

@@ -43,6 +43,15 @@
         />
         <el-table-column label="操作" width="150">
           <template #default="scope">
+            <el-button
+              type="primary"
+              size="small"
+              circle
+              @click="openEditDialog(scope.row)"
+              style="margin-right: 10px"
+            >
+              <el-icon><Edit /></el-icon>
+            </el-button>
             <el-popconfirm
               title="确定删除吗？"
               @confirm="handleDelete(scope.row)"
@@ -59,7 +68,11 @@
     </el-card>
 
     <!-- Add/Edit Dialog -->
-    <el-dialog v-model="dialogVisible" :title="'新增' + title" width="500px">
+    <el-dialog
+      v-model="dialogVisible"
+      :title="(isEdit ? '编辑' : '新增') + title"
+      width="500px"
+    >
       <el-form :model="formData" label-width="80px" ref="formRef">
         <el-form-item
           v-for="item in formItems"
@@ -123,6 +136,7 @@ const tableData = ref([]);
 const loading = ref(false);
 const searchKeyword = ref("");
 const dialogVisible = ref(false);
+const isEdit = ref(false);
 const formData = reactive({});
 const formRef = ref(null);
 
@@ -157,11 +171,21 @@ const handleSearch = async () => {
 };
 
 const openAddDialog = () => {
+  isEdit.value = false;
   // Reset form
   props.formItems.forEach((item) => {
     formData[item.prop] =
       item.defaultValue !== undefined ? item.defaultValue : "";
   });
+  // Clear ID if exists
+  delete formData.id;
+  dialogVisible.value = true;
+};
+
+const openEditDialog = (row) => {
+  isEdit.value = true;
+  // Populate form
+  Object.assign(formData, row);
   dialogVisible.value = true;
 };
 
@@ -170,7 +194,11 @@ const handleSubmit = async () => {
   await formRef.value.validate(async (valid) => {
     if (valid) {
       try {
-        await request.post(`/${props.entity}`, formData);
+        if (isEdit.value) {
+          await request.put(`/${props.entity}`, formData);
+        } else {
+          await request.post(`/${props.entity}`, formData);
+        }
         ElMessage.success("保存成功");
         dialogVisible.value = false;
         fetchData();

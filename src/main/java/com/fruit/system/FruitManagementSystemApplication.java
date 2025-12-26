@@ -15,4 +15,4 @@ public class FruitManagementSystemApplication {
         SpringApplication.run(FruitManagementSystemApplication.class, args);
     }
 
-}
+} 

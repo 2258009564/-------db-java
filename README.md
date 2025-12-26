@@ -12,22 +12,28 @@
 水果管理系统 db-java/
 ├── pom.xml                     # Maven 项目配置文件
 ├── README.md                   # 项目说明文档
-├── vue-frontend/               # [新增] Vue 3 前端项目源码
+├── Fruit_System_Report.md      # 课程设计报告
+├── sql/                        # 数据库脚本
+│   └── init.sql                # 数据库初始化 SQL
+├── vue-frontend/               # Vue 3 前端项目源码
 │   ├── src/
 │   │   ├── api/                # Axios 请求封装
-│   │   ├── components/         # 公共组件 (如 BaseTable)
-│   │   ├── layout/             # 布局组件 (侧边栏/顶栏)
+│   │   ├── components/         # 公共组件
+│   │   ├── layout/             # 布局组件
 │   │   ├── router/             # 路由配置
-│   │   └── views/              # 页面视图 (Dashboard, Login, etc.)
-│   └── package.json            # 前端依赖配置
+│   │   └── views/              # 页面视图
+│   ├── package.json            # 前端依赖配置
+│   └── vite.config.js          # Vite 构建配置
 ├── src/
 │   └── main/
 │       ├── java/com/fruit/system/
-│       │   ├── controller/     # 控制层 (按模块拆分: Sales, Employee...)
-│       │   ├── service/        # 业务层 (按模块拆分)
-│       │   ├── repository/     # 数据访问层
-│       │   └── entity/         # 实体类
+│       │   ├── controller/     # 控制层 (API 接口)
+│       │   ├── service/        # 业务层 (逻辑处理)
+│       │   ├── repository/     # 数据访问层 (JPA)
+│       │   ├── entity/         # 实体类 (数据库映射)
+│       │   └── FruitManagementSystemApplication.java # 启动类
 │       └── resources/
+│           ├── application.properties # 后端配置文件
 │           └── static/         # [自动生成] 编译后的前端静态资源
 ```
 
@@ -86,7 +92,7 @@ _构建完成后，资源会自动输出到 `src/main/resources/static`，后端
 
 ```bash
 cd vue-frontend
-npm run dev
+npm run serve
 ```
 
 ---
