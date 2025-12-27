@@ -6,7 +6,101 @@
 
 ---
 
-## 2. 项目结构 (File Tree)
+## 2. 快速开始 (Quick Start)
+
+### 2.1 环境准备
+
+在运行本项目之前，请确保您的电脑已安装以下环境：
+
+- **Java JDK**: 推荐 JDK 17 或 JDK 21。
+- **Node.js**: 推荐 Node.js 16+ (用于构建前端)。
+- **MySQL**: 推荐 MySQL 8.0。
+- **Maven**: (可选) 如果使用 VS Code 或 IntelliJ IDEA，IDE 会自动处理依赖，无需手动安装 Maven。
+- **Git**: 用于下载代码。
+
+### 2.2 下载项目
+
+打开终端（Terminal）或 Git Bash，执行以下命令：
+
+```bash
+git clone https://github.com/your-username/fruit-management-system.git
+cd fruit-management-system
+```
+
+_(注：如果是下载的 ZIP 包，请直接解压并进入文件夹)_
+
+### 2.3 初始化数据库
+
+1.  **创建数据库**: 登录 MySQL，创建一个名为 `fruit_db` 的数据库。
+    ```sql
+    CREATE DATABASE fruit_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    ```
+2.  **导入数据**: 运行项目根目录下的 `sql/init.sql` 脚本。
+    - 可以使用 Navicat、DBeaver 等工具导入。
+    - 或者使用命令行：`mysql -u root -p fruit_db < sql/init.sql`
+3.  **配置连接**: 打开 `src/main/resources/application.properties` 文件，修改数据库密码：
+    ```properties
+    spring.datasource.username=root
+    spring.datasource.password=你的数据库密码
+    ```
+
+### 2.4 第一次构建 (First Build)
+
+在首次运行前，需要下载依赖包。
+
+**后端依赖 (Maven):**
+
+```bash
+mvn clean install
+```
+
+_(如果使用 VS Code，打开项目后等待 Java 插件自动加载依赖即可)_
+
+**前端依赖 (Node.js):**
+
+```bash
+cd vue-frontend
+npm install
+```
+
+### 2.5 运行项目 (Run)
+
+本项目采用前后端分离架构，需要**同时启动**两个服务（后端 + 前端）。
+
+**1. 启动后端 (Backend)**
+
+保持当前终端窗口，执行：
+
+```bash
+# 在项目根目录
+mvn spring-boot:run
+```
+
+_(或者在 VS Code 中找到 `FruitManagementSystemApplication.java` 点击 Run)_
+
+> **注意**: 看到 `Started FruitManagementSystemApplication in ... seconds` 即表示启动成功。**请不要关闭此窗口**。
+
+**2. 启动前端 (Frontend)**
+
+**新建**一个终端窗口 (Terminal)，执行：
+
+```bash
+# 进入前端目录
+cd vue-frontend
+# 启动开发服务器
+npm run serve
+```
+
+**3. 访问系统**
+
+打开浏览器访问：[http://localhost:5173](http://localhost:5173)
+
+- **默认账号**: `admin`
+- **默认密码**: `123`
+
+---
+
+## 3. 项目结构 (File Tree)
 
 ```text
 水果管理系统 db-java/
@@ -34,65 +128,6 @@
 │       │   └── FruitManagementSystemApplication.java # 启动类
 │       └── resources/
 │           ├── application.properties # 后端配置文件
-│           └── static/         # [自动生成] 编译后的前端静态资源
-```
-
----
-
-## 3. 使用指南 (User Guide)
-
-### 3.1 环境准备
-
-在运行本项目之前，请确保您的电脑已安装以下环境：
-
-- **Java JDK**: 推荐 JDK 17 或 JDK 21。
-- **Node.js**: 推荐 Node.js 16+ (用于构建前端)。
-- **MySQL**: 推荐 MySQL 8.0。
-- **Maven**: 用于构建项目。
-
-### 3.2 数据库配置
-
-1.  **创建数据库**: 登录 MySQL，执行 `sql/init.sql` 中的脚本，或者手动创建数据库 `fruit_db` 并导入表结构。
-2.  **修改配置**: 打开 `src/main/resources/application.properties` 文件，确认数据库连接信息：
-    ```properties
-    spring.datasource.url=jdbc:mysql://localhost:3306/fruit_db?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf-8
-    spring.datasource.username=root
-    spring.datasource.password=你的数据库密码
-    ```
-
-### 3.3 如何运行 (How to Run)
-
-**第一步：构建前端 (Build Frontend)**
-
-本项目前端独立开发，需先编译生成静态资源。
-
-```bash
-cd vue-frontend
-npm install
-npm run build
-```
-
-_构建完成后，资源会自动输出到 `src/main/resources/static`，后端即可读取。_
-
-**第二步：启动后端 (Run Backend)**
-
-1.  使用 VS Code 打开项目根目录。
-2.  找到启动类 `src/main/java/com/fruit/system/FruitManagementSystemApplication.java`。
-3.  点击 **Run** 运行。
-
-**第三步：访问系统**
-
-- 打开浏览器，访问: [http://localhost:8080](http://localhost:8080)
-- **默认账号**: `admin`
-- **默认密码**: `123456`
-
-### 3.4 开发模式
-
-如果需要修改前端代码并实时预览（热更新）：
-
-```bash
-cd vue-frontend
-npm run serve
 ```
 
 ---
@@ -128,3 +163,22 @@ npm run serve
 - **Supplier (供应商)**: id, name, phone, address
 - **Fruit (商品)**: id, name, price, stock, supplier_id
 - **Sales (销售记录)**: id, fruit_id, customer_id, employee_id, quantity, total_price, sale_date
+
+---
+
+## 7. 常见问题 (Troubleshooting)
+
+**Q1: 启动后端时报错 "Port 8080 was already in use"**
+
+- **原因**: 端口 8080 被占用。
+- **解决**: 关闭占用该端口的程序，或者修改 `src/main/resources/application.properties` 中的 `server.port=8081`，然后重启后端。
+
+**Q2: 前端页面显示 "Network Error" 或无法加载数据**
+
+- **原因**: 后端服务未启动，或前端代理配置错误。
+- **解决**: 确保后端控制台没有报错且正在运行。检查 `vue-frontend/vite.config.js` 中的 `proxy` 目标地址是否为 `http://localhost:8080`。
+
+**Q3: 登录失败，提示 "Bad Credentials"**
+
+- **原因**: 数据库密码错误或数据未导入。
+- **解决**: 检查 `application.properties` 中的数据库密码是否正确；检查数据库 `fruit_db` 中是否有 `employee` 表且包含 admin 用户。
